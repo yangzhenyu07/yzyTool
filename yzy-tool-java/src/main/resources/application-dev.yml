@@ -1,0 +1,129 @@
+server:
+  port: 13145  # 默认端口
+  tomcat:
+    remote-ip-header: x-forwarded-for  # 反代理时使用
+    protocol-header: x-forwarded-proto # 反代理时使用
+    uri-encoding: UTF-8
+  ssl:
+    key-store: classpath:monitoring.p12 # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    key-store-password: appuser@devA # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    key-store-type: PKCS12 # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    key-alias: psbcMonitoring # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    trust-store: classpath:rootca.p12  # 信任库
+    trust-store-password: changeit
+    trust-store-type: PKCS12
+    client-auth: need  # 开启双向验证
+    addHttpPort: 8089  # 新增http的端口
+spring:
+  flyway:
+    enabled: true # 是否启用 Flyway，true 启用，false 不启用
+    # 版本更新历史记录表
+    table: yzy_db_version
+    # 非空数据库初始化Flyway时需要打开此开关进行Baseline操作
+    baseline-on-migrate: true
+    # 是否可以无序执行
+    out-of-order: false
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: false
+    locations: classpath:db/master  # 指定 SQL 脚本文件夹路径 这里写主库路径，然后在配置类中转换
+    # 编码格式，默认UTF-8
+    encoding: UTF-8
+    # 迁移sql脚本文件名称的前缀，默认V
+    sql-migration-prefix: V
+    # 迁移sql脚本文件名称的分隔符，默认2个下划线__
+    sql-migration-separator: __
+    # 迁移sql脚本文件名称的后缀
+    sql-migration-suffixes: .sql
+    # 基础版本号
+    baseline-version: 1
+  datasource:
+    dynamic: # druid连接池配置
+      primary: master #默认数据源
+      datasource:
+        master: #主库配置
+          username: YZY_MASTER  #YZY_MASTER
+          password: ENC(CgwyMkKNHNItXT39rGiO/PoiO/i93iCr) #yzy@1234
+          driver-class-name: ${datasource_driver_class_name:com.mysql.cj.jdbc.Driver}
+          url: ${datasource_url:jdbc:mysql://127.0.0.1:3306/YZY_DB?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+          druid:
+            initial-size: 5 #启动程序时，在连接池中初始化多少个连接
+            max-active: 20 #连接池中最多支持多少个活动会话
+            min-idle: 5 #回收空闲连接时，将保证至少有minIdle个连接
+            max-wait: 60000 #程序向连接池中请求连接时,超过maxWait的值后，认为本次请求失败，即连接池
+            filters: stat,wall,slf4j
+        slave: #从库配置
+          username: YZY_SLAVE  #YZY_SLAVE
+          password: ENC(CgwyMkKNHNItXT39rGiO/PoiO/i93iCr)  #yzy@1234
+          driver-class-name: ${datasource_driver_class_name:com.mysql.cj.jdbc.Driver}
+          url: ${datasource_url:jdbc:mysql://127.0.0.1:3306/YZY_SLAVE_DB?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+          druid:
+            initial-size: 5 #启动程序时，在连接池中初始化多少个连接
+            max-active: 20 #连接池中最多支持多少个活动会话
+            min-idle: 5 #回收空闲连接时，将保证至少有minIdle个连接
+            max-wait: 60000 #程序向连接池中请求连接时,超过maxWait的值后，认为本次请求失败，即连接池
+            filters: stat,wall,slf4j
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+https:
+  config:
+    flag: PSBC@12!5440_YES # 开启https 全局注入
+  appPort-config:
+    flag: PSBC@12!5440_YES # 开启http 端口号 注入，端口号为server.ssl.addHttpPort,如果不填，端口号默认为8080
+  restTemplate:
+    flag: PSBC@12!5440_YES # 开启https restTemplate 改造注入
+config:
+  token:
+    time: 120 # token超时时间
+logging:
+  level:
+#    org.springframework: DEBUG
+#    org.apache.catalina: DEBUG
+    org.quartz: DEBUG # 启用 Quartz 调度器的详细日志
+jasypt:
+  encryptor:
+    #password  本地环境将密钥放入yml文件中，生产需要jvm携带 -Djasypt.encryptor.password=xxxxx
+    password: yzy_@user!1Ux
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+#mybatis plus 设置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  global-config:
+    # 关闭MP3.0自带的banner
+    banner: false
+    db-config:
+      #主键类型  0:"数据库ID自增",1:"该类型为未设置主键类型", 2:"用户输入ID",3:"全局唯一ID (数字类型唯一ID)", 4:"全局唯一ID UUID",5:"字符串全局唯一ID (idWorker 的字符串表示)";
+      id-type: ASSIGN_ID
+      # 默认数据库表下划线命名
+      table-underline: true
+  configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 返回类型为Map,显示null对应的字段
+    call-setters-on-nulls: true
+
+web3:
+  nodes:
+    localhost:
+      - name: localhost-rpc1
+        url: http://127.0.0.1:8545/
+        weight: 5
+      - name: localhost-rpc2
+        url: http://127.0.0.1:8545/
+        weight: 1
+    eth_sepolia:
+      - name: eth_sepolia-rpc1
+        url: Empty
+        weight: 5
+      - name: eth_sepolia-rpc2
+        url: Empty
+        weight: 1
+  config:
+    connect-timeout: 5000  # 连接超时5s
+    read-timeout: 10000    # 读取超时10s
+  nodeNames: localhost,eth_sepolia # 节点配置白名单
+

@@ -1,0 +1,5 @@
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true    # 2.6版本默认不支持循环依赖了

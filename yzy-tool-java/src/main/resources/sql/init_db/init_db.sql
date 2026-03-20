@@ -1,0 +1,19 @@
+CREATE DATABASE IF NOT EXISTS YZY_DB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE USER 'YZY_MASTER'@'%' IDENTIFIED BY 'yzy@1234';
+GRANT ALL PRIVILEGES ON YZY_DB.* TO 'YZY_MASTER'@'%' IDENTIFIED BY 'yzy@1234';
+-- 为了flyway访问，Flyway 在 MySQL 上可能会访问一些系统表（如 user_variables_by_thread）
+GRANT SELECT ON performance_schema.* TO 'YZY_MASTER'@'%';
+GRANT SELECT ON mysql.* TO 'YZY_MASTER'@'%';
+FLUSH PRIVILEGES;
+
+
+CREATE DATABASE IF NOT EXISTS YZY_SLAVE_DB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE USER 'YZY_SLAVE'@'%' IDENTIFIED BY 'yzy@1234';
+GRANT ALL PRIVILEGES ON YZY_SLAVE_DB.* TO 'YZY_SLAVE'@'%' IDENTIFIED BY 'yzy@1234';
+-- 为了flyway访问，Flyway 在 MySQL 上可能会访问一些系统表（如 user_variables_by_thread）
+GRANT SELECT ON performance_schema.* TO 'YZY_SLAVE'@'%';
+GRANT SELECT ON mysql.* TO 'YZY_SLAVE'@'%';
+FLUSH PRIVILEGES;
+

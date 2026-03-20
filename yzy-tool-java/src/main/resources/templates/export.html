@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Excel 导出</title>
+    <script>
+        async function exportExcel(event) {
+            event.preventDefault();
+            const directory = document.getElementById('directory').value;
+            const data = JSON.parse(document.getElementById('data').value);
+
+            try {
+                const response = await fetch('/api/excel/export', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ directory, data })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = directory + '.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                } else {
+                    const errorText = await response.text();
+                    alert('导出失败: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('导出过程中发生错误');
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Excel 导出</h1>
+<form onsubmit="exportExcel(event)">
+    <label for="directory">目录名称：</label>
+    <input type="text" id="directory" name="directory" required><br><br>
+
+    <label for="data">数据（JSON 格式）：</label><br>
+    <textarea id="data" name="data" rows="10" cols="50" required></textarea><br><br>
+
+    <button type="submit">导出 Excel</button>
+</form>
+</body>
+</html>

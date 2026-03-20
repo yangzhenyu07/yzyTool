@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.TSchedulerLockHistoryMapper">
+
+    <sql id="config_model_base_query">
+        SEQUENCE_NO,
+        PK_T_SCHEDULER_LOCK_HISTORY,
+        FK_T_SCHEDULER_LOCK,
+        KEY_NAME,
+        KEY_VALUE,
+        RESULT_STATE,
+        RESULT_BY,
+        TRACE_ID,
+        ERROR_MESSAGE,
+        CREATE_TIME
+    </sql>
+
+
+    <!-- 分页查询 -->
+    <select id="queryHistory" resultType="org.example.dto.TSchedulerLockHistoryDTO">
+        SELECT
+        <include refid="config_model_base_query" />
+         from t_scheduler_lock_history h
+        <where>
+            <if test="name != null and name != ''">
+                AND h.FK_T_SCHEDULER_LOCK =
+                (select l.PK_T_SCHEDULER_LOCK from t_scheduler_lock   l where l.KEY_NAME = #{name} )
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

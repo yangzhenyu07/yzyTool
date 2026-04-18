@@ -1,0 +1,33 @@
+-- ===================== 主库 =====================
+CREATE DATABASE IF NOT EXISTS YZY_DB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE USER 'YZY_MASTER'@'%' IDENTIFIED BY 'yzy@1234';
+-- 业务库给 ALL
+GRANT ALL PRIVILEGES ON YZY_DB.* TO 'YZY_MASTER'@'%';
+
+-- 系统库只能给 SELECT，不能给 ALL
+GRANT SELECT ON performance_schema.* TO 'YZY_MASTER'@'%';
+GRANT SELECT ON mysql.* TO 'YZY_MASTER'@'%';
+GRANT SELECT ON sys.* TO 'YZY_MASTER'@'%';
+
+-- 全局权限（必须保留，Flyway 需要）
+GRANT RELOAD, PROCESS, CREATE TEMPORARY TABLES, LOCK TABLES ON *.* TO 'YZY_MASTER'@'%';
+
+FLUSH PRIVILEGES;
+
+-- ===================== 从库 =====================
+CREATE DATABASE IF NOT EXISTS YZY_SLAVE_DB DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE USER 'YZY_SLAVE'@'%' IDENTIFIED BY 'yzy@1234';
+-- 业务库给 ALL
+GRANT ALL PRIVILEGES ON YZY_SLAVE_DB.* TO 'YZY_SLAVE'@'%';
+
+-- 系统库只能给 SELECT
+GRANT SELECT ON performance_schema.* TO 'YZY_SLAVE'@'%';
+GRANT SELECT ON mysql.* TO 'YZY_SLAVE'@'%';
+GRANT SELECT ON sys.* TO 'YZY_SLAVE'@'%';
+
+-- 全局权限（必须保留，Flyway 需要）
+GRANT RELOAD, PROCESS, CREATE TEMPORARY TABLES, LOCK TABLES ON *.* TO 'YZY_SLAVE'@'%';
+
+FLUSH PRIVILEGES;

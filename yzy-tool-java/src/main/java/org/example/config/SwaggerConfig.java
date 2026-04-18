@@ -80,7 +80,7 @@ private static final Logger log = LoggerFactory.getLogger(SwaggerConfig.class);
                 .description("描述：接口")
                 .version("版本号:1.0.0" )
                 .contact(new Contact("yangzhenyu", "", "xxx@ccbscf.com"))
-                //http://127.0.0.1:13145/doc.html
+                //http://127.0.0.1:8089/doc.html
                 .termsOfServiceUrl("http://{ip}:{port}/swagger-ui.html")
                 .build();
     }

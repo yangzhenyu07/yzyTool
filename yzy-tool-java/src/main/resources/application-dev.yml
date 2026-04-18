@@ -50,7 +50,7 @@ spring:
             max-active: 20 #连接池中最多支持多少个活动会话
             min-idle: 5 #回收空闲连接时，将保证至少有minIdle个连接
             max-wait: 60000 #程序向连接池中请求连接时,超过maxWait的值后，认为本次请求失败，即连接池
-            filters: stat,wall,slf4j
+            filters: stat,slf4j
         slave: #从库配置
           username: YZY_SLAVE  #YZY_SLAVE
           password: ENC(CgwyMkKNHNItXT39rGiO/PoiO/i93iCr)  #yzy@1234
@@ -61,7 +61,7 @@ spring:
             max-active: 20 #连接池中最多支持多少个活动会话
             min-idle: 5 #回收空闲连接时，将保证至少有minIdle个连接
             max-wait: 60000 #程序向连接池中请求连接时,超过maxWait的值后，认为本次请求失败，即连接池
-            filters: stat,wall,slf4j
+            filters: stat,slf4j
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html

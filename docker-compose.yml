@@ -1,0 +1,32 @@
+services:
+  redis:
+    profiles: [ "redis" ]
+    container_name: "yzy-redis"
+    image: "docker.io/library/redis:8.2.0"
+    restart: always          # 永久自启
+    networks:
+      - yzy-network
+    volumes:
+      - /mnt/f/data/redis:/data
+    ports:
+      - "6379:6379"
+
+  mysql:
+    profiles: [ "mysql" ]
+    container_name: "yzy-mysql"
+    image: "docker.io/library/mysql:9.4.0"
+    restart: always          # 永久自启
+    networks:
+      - yzy-network
+    environment:
+      MYSQL_ROOT_PASSWORD: yzy
+      MYSQL_DATABASE: yzy_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - /yzy/data/mysql:/var/lib/mysql # 挂载宿主机以持久化
+
+networks:
+  yzy-network:
+    name: yzy-network
+    driver: bridge

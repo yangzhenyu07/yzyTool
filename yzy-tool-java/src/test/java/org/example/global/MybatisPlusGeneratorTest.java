@@ -29,15 +29,15 @@ import java.util.Collections;
  * @date 2023/4/24 14:21
  * @version 1.0
  */
-//@RunWith(SpringRunner.class)
-//@SpringBootTest(classes = DemoDbTool.class)
-//@Slf4j
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = DemoDbTool.class)
+@Slf4j
 public class MybatisPlusGeneratorTest {
     @Autowired
     private DynamicRoutingDataSource dataSource;
 
     //代码生成
-    //@Test
+    @Test
     public void test(){
         //数据源选择
         final String dbFlag = "master";
@@ -56,7 +56,7 @@ public class MybatisPlusGeneratorTest {
 
         //需要生成的表
         //String [] tables = new String[]{"t_param_config","t_scheduler_lock"};
-        String [] tables = new String[]{"t_param_config"};
+        String [] tables = new String[]{"t_user_test"};
         //配置数据源
         FastAutoGenerator.create(url, username, password)
                 //2、全局配置

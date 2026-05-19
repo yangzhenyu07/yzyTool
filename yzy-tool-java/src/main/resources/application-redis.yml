@@ -1,0 +1,42 @@
+server:
+  port: 13145  # 默认端口
+  tomcat:
+    remote-ip-header: x-forwarded-for  # 反代理时使用
+    protocol-header: x-forwarded-proto # 反代理时使用
+    uri-encoding: UTF-8
+  ssl:
+    key-store: classpath:monitoring.p12 # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    key-store-password: appuser@devA # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    key-store-type: PKCS12 # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    key-alias: psbcMonitoring # 改造服务端认证去掉，这块的改为当中客户端发送的证书使用
+    trust-store: classpath:rootca.p12  # 信任库
+    trust-store-password: changeit
+    trust-store-type: PKCS12
+    client-auth: need  # 开启双向验证
+    addHttpPort: 8089  # 新增http的端口
+spring:
+  redis:
+    my:
+      flag: true
+      host: 127.0.0.1
+      port: 6379
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+https:
+  config:
+    flag: PSBC@12!5440_YES # 开启https 全局注入
+  appPort-config:
+    flag: PSBC@12!5440_YES # 开启http 端口号 注入，端口号为server.ssl.addHttpPort,如果不填，端口号默认为8080
+  restTemplate:
+    flag: PSBC@12!5440_YES # 开启https restTemplate 改造注入
+config:
+  token:
+    time: 1500 # token超时时间
+#logging:
+#  level:
+#    org.springframework: DEBUG
+#    org.apache.catalina: DEBUG

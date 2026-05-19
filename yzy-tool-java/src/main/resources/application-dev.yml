@@ -15,6 +15,11 @@ server:
     client-auth: need  # 开启双向验证
     addHttpPort: 8089  # 新增http的端口
 spring:
+  redis:
+    my:
+      flag: true
+      host: 127.0.0.1
+      port: 6379
   flyway:
     enabled: true # 是否启用 Flyway，true 启用，false 不启用
     # 版本更新历史记录表
